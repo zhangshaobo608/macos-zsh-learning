@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>macOS Zsh 学习手册</title>
+  <style>
+    :root{--ink:#172b2c;--muted:#667578;--line:#dfe5e4;--soft:#f5f7f7;--accent:#256b59;--accent-soft:#e8f2ef;--code:#172326;--code-text:#b8efcd;--danger:#9a3f36;--r:6px;--side:270px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:#fff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.65;letter-spacing:0}button,input,select{font:inherit;color:inherit}button{cursor:pointer}a{color:var(--accent)}code,kbd,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}code{padding:.12em .32em;background:#eef2f1;border-radius:3px;font-size:.9em}kbd{border:1px solid #c9d1cf;border-bottom-width:2px;border-radius:4px;padding:1px 6px;background:#fff;font-size:12px}
+    .topbar{position:sticky;top:0;z-index:20;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.96)}.brand{font-size:19px;font-weight:750}.top-actions{display:flex;gap:8px}.icon-btn,.text-btn{min-height:38px;border:1px solid transparent;background:#fff;border-radius:5px;padding:7px 11px;display:inline-flex;align-items:center;gap:7px}.icon-btn:hover,.text-btn:hover{background:var(--soft)}.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .layout{display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:calc(100vh - 64px)}aside{position:sticky;top:64px;height:calc(100vh - 64px);padding:22px 18px;background:var(--soft);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:auto}.side-title{font-size:13px;color:var(--muted);font-weight:700;margin:0 10px 8px}.nav{display:grid;gap:2px}.nav-group{margin:15px 11px 4px;color:var(--muted);font-size:11px;font-weight:750;text-transform:uppercase}.nav-group:first-child{margin-top:2px}.nav button{width:100%;border:0;background:transparent;text-align:left;padding:8px 11px;border-radius:5px;font-weight:600}.nav button.command-link{padding-top:6px;padding-bottom:6px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.nav button span{display:inline-block;width:30px;color:var(--muted);font-weight:500}.nav button:hover{background:#edf1f0}.nav button.active{background:var(--accent-soft);color:var(--accent)}.nav button.done::after{content:"✓";float:right}.side-tools{border-top:1px solid var(--line);margin-top:19px;padding-top:15px}.side-tools button{width:100%;border:0;background:transparent;text-align:left;padding:9px 11px;border-radius:5px}.side-tools button:hover{background:#edf1f0}.progress-wrap{position:sticky;bottom:-22px;margin:18px -18px -22px;padding:14px 28px 20px;border-top:1px solid var(--line);background:var(--soft)}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}.progress{height:8px;background:#dfe5e4;border-radius:6px;margin-top:8px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+    main{min-width:0}.content{width:min(980px,calc(100% - 76px));margin:0 auto;padding:48px 0 104px}.hero{padding-bottom:31px;border-bottom:1px solid var(--line)}h1{font-size:38px;line-height:1.2;margin:0 0 8px;font-weight:800}h2{font-size:28px;line-height:1.3;margin:10px 0 8px}h3{font-size:20px;margin:31px 0 10px}.lead{font-size:18px;margin:0 0 4px;color:#46585b}.meta,.muted{color:var(--muted)}.meta{font-size:14px}.search{margin-top:22px;position:relative}.search input{width:100%;height:48px;border:1px solid #cad4d2;border-radius:var(--r);padding:0 48px 0 42px;outline:none;background:#fff}.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,107,89,.1)}.search svg{position:absolute;left:14px;top:15px}.search kbd{position:absolute;right:12px;top:12px;color:var(--muted)}
+    .chapter{display:none;padding-top:28px}.chapter.active{display:block}.chapter-index{font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}.chapter-intro{font-size:17px;color:#46585b;margin-top:0}.definition{display:grid;grid-template-columns:42px 210px 1fr;gap:10px;padding:14px 12px;border-bottom:1px solid var(--line);align-items:start}.definition:first-of-type{border-top:1px solid var(--line)}.definition b{font-size:15px}.definition .num{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .terminal{background:var(--code);color:#edf5f1;margin:25px 0 8px;border-radius:var(--r);overflow:hidden}.terminal-head{height:40px;display:flex;align-items:center;gap:7px;padding:0 14px;background:#263336;color:#aebcba;font-size:13px}.dot{width:11px;height:11px;border-radius:50%;background:#ff6b67}.dot:nth-child(2){background:#f5c451}.dot:nth-child(3){background:#51c878}.terminal-head span:nth-child(4){margin-left:5px}.copy{margin-left:auto;border:0;background:transparent;color:#c9d4d2;padding:5px}.terminal pre{margin:0;padding:18px 20px 21px;color:var(--code-text);white-space:pre-wrap;overflow:auto;line-height:1.65}.tip{font-size:13px;color:var(--muted);text-align:right}.note,.warning{margin:18px 0;padding:13px 16px;border-left:3px solid var(--accent);background:var(--soft)}.warning{border-color:var(--danger)}
+    details{border-top:1px solid var(--line)}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;padding:14px 4px;font-weight:700;list-style:none}summary::-webkit-details-marker{display:none}summary::before{content:"›";display:inline-block;margin-right:10px;color:var(--accent);transition:transform .2s}details[open] summary::before{transform:rotate(90deg)}details>div{padding:0 4px 16px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px}.plain-list{margin:10px 0;padding-left:21px}.plain-list li{margin:6px 0}
+    .command-toolbar{display:flex;align-items:center;gap:10px;margin:18px 0}.command-toolbar input{flex:1;height:42px;border:1px solid #cad4d2;border-radius:5px;padding:0 12px}.command-toolbar .btn{white-space:nowrap}.count{font-size:13px;color:var(--muted);white-space:nowrap}.library-note{display:flex;gap:28px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--muted)}.library-note b{display:block;color:var(--ink);font-size:18px}.table-wrap{overflow:auto;border-top:1px solid var(--line)}table{border-collapse:collapse;width:100%;min-width:900px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:13px 10px}th{font-size:13px;color:var(--muted);background:#fafbfb;position:sticky;top:0}td:first-child{font-weight:750;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent)}td code{white-space:normal}.origin{display:block;width:max-content;margin-top:5px;padding:1px 5px;border:1px solid #c9d5d2;border-radius:3px;color:var(--muted);font:500 10px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.combo{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.6}.case-row td,.case-row td:first-child{padding:0 10px 14px;background:#fafbfb;border-bottom:1px solid #cdd7d5;color:var(--ink);font-family:inherit;font-weight:400}.case-practice{border:0!important}.case-practice summary{padding:10px 0;color:var(--accent);font-size:14px;font-weight:700}.case-practice>div{padding:0 0 5px}.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px}.case-grid p{margin:3px 0}.case-answer{grid-column:1/-1;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:4px}.case-answer code{display:block;margin:4px 0}.empty{display:none;padding:22px;text-align:center;color:var(--muted)}
+    .option-grid{display:grid;grid-template-columns:110px 1fr 1fr;border-top:1px solid var(--line)}.option-grid>div{padding:11px 9px;border-bottom:1px solid var(--line)}.option-grid .head{font-size:13px;color:var(--muted);font-weight:700;background:#fafbfb}.option-grid .flag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700}.path-flow{display:grid;grid-template-columns:repeat(4,1fr);margin:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.path-flow div{padding:16px 12px;border-right:1px solid var(--line)}.path-flow div:last-child{border-right:0}.path-flow small{display:block;color:var(--muted)}
+    .practice{border:1px solid #cad4d2;border-radius:var(--r);padding:20px;margin-top:18px}.practice label{font-weight:700;display:block;margin-bottom:8px}.practice input{width:100%;height:42px;border:1px solid #becac8;border-radius:4px;padding:0 11px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.practice .result{min-height:27px;margin-top:10px;font-size:14px}.btn{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:5px;padding:9px 14px;font-weight:700}.btn.primary{background:var(--accent);color:#fff}.btn:disabled{cursor:not-allowed;opacity:.5}.practice .btn{margin-top:11px}.answer-details{margin-top:14px;border-bottom:1px solid var(--line)}.completion-status{align-self:center;color:var(--muted);font-size:14px}.completion-status.done{color:var(--accent);font-weight:700}.course-link{display:block;margin-top:6px;border:0;background:transparent;color:var(--accent);padding:0;font-size:12px;font-weight:700}.quiz-q{padding:18px 0;border-bottom:1px solid var(--line)}.quiz-q fieldset{border:0;padding:0;margin:0}.quiz-q legend{font-weight:750;margin-bottom:8px}.quiz-q label{display:block;padding:6px 0}.feedback{margin-top:7px;font-size:14px}.correct{color:var(--accent)}.incorrect{color:var(--danger)}
+    .course-overview{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}.course-overview>div{padding:15px 16px;border-top:2px solid var(--accent);background:var(--soft)}.course-overview small{display:block;color:var(--muted);margin-bottom:3px}.param-list{display:grid;gap:0;border-top:1px solid var(--line);margin:8px 0 24px}.param-list div{padding:11px 10px;border-bottom:1px solid var(--line);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.case-task{margin:20px 0;padding:18px;border:1px solid var(--line);border-radius:var(--r);background:#fafbfb}.case-task h3{margin:0 0 7px;font-size:18px}.case-task p{margin:6px 0}.lesson-footer{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:36px;padding-top:20px}.complete-btn.completed{background:var(--accent-soft)}.sources{font-size:14px}.sources li{margin:8px 0}.mobile-chapter{display:none;width:100%;height:42px;margin:15px 0;border:1px solid #cad4d2;background:#fff;border-radius:5px;padding:0 10px}
+    .print-only{display:none}.toast{position:fixed;right:22px;bottom:22px;background:#172b2c;color:#fff;border-radius:5px;padding:10px 14px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:40}.toast.show{opacity:1;transform:none}
+    @media(max-width:820px){.topbar{padding:0 15px;overflow:hidden}.top-actions .label,.top-actions .text-btn{display:none}.layout{display:block}aside{display:none}.content{width:calc(100% - 32px);padding-top:27px}.mobile-chapter{display:block}h1{font-size:31px}.definition{grid-template-columns:34px 1fr}.definition>div:last-child{grid-column:2}.two-col,.case-grid,.course-overview{grid-template-columns:1fr}.case-answer{grid-column:1}.command-toolbar{flex-wrap:wrap}.command-toolbar input{flex-basis:100%}.path-flow{grid-template-columns:1fr 1fr}.path-flow div:nth-child(2){border-right:0}.lesson-footer{align-items:stretch;flex-wrap:wrap}.lesson-footer .btn{flex:1}.option-grid{grid-template-columns:80px 1fr}.option-grid>div:nth-child(3n){grid-column:2}.option-grid .head:nth-child(3){display:none}}
+    @media print{@page{size:A4;margin:11mm 12mm}body{font-size:9.2pt;line-height:1.35}.topbar,aside,.hero,.chapter,.toast,.mobile-chapter{display:none!important}.layout{display:block}.content{width:100%;padding:0;margin:0}.print-only{display:block}.print-only h1{font-size:20pt;margin-bottom:2mm}.print-only h2{font-size:13pt;border-bottom:1px solid #555;margin:4mm 0 2mm}.print-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 7mm}.print-grid section{break-inside:avoid}.print-only table{min-width:0;font-size:8pt}.print-only th,.print-only td{padding:1.3mm 1mm}.print-only code{padding:0;background:none}.print-note{border:1px solid #777;padding:2mm 3mm;margin:2mm 0}.print-footer{margin-top:3mm;font-size:7.5pt;color:#555}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="brand">Zsh 学习手册</div><div class="top-actions"><button class="text-btn" id="quickTop">完整命令库</button><button class="icon-btn" id="printBtn" title="打印速查表"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/></svg><span class="label">打印速查表</span></button></div></header>
+  <div class="layout">
+    <aside><div class="side-title">课程目录 · 4 个主题</div><nav class="nav" id="nav"></nav><div class="side-tools"><button data-view="options">⚑　常用参数与帮助</button><button data-view="reference">⌕　完整命令库（39）</button><button data-view="quiz">▣　巩固自测</button></div><div class="progress-wrap"><div class="progress-label"><span>命令课程进度</span><span id="progressText">0 / 39</span></div><div class="progress"><i id="progressBar"></i></div></div></aside>
+    <main><div class="content">
+      <section class="hero"><h1>macOS Zsh 学习手册</h1><p class="lead">从安全起步，沿 4 个主题学会 39 个命令。</p><div class="meta">1 节起步 · 4 节主题导学 · 39 节命令课程 · macOS Sequoia 15.x · zsh</div><div class="search"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="globalSearch" aria-label="搜索" placeholder="搜索命令、参数或知识点，例如 cp、PATH、重定向"><kbd>/</kbd></div><select class="mobile-chapter" id="mobileChapter" aria-label="选择课程"></select></section>
+      <div id="chapters"></div>
+      <section class="chapter" id="options"><div class="chapter-index">参数速查</div><h2>常用参数与帮助</h2><p class="chapter-intro">先认识常见模式，再回到具体命令确认真实含义。</p><div class="warning"><b>写法：</b><code>--help</code>、<code>--version</code> 各自是一个完整参数，两个短横线和单词之间没有空格。它们是常见约定，并非所有 macOS 命令都支持。</div><h3>查帮助和版本</h3><div class="definition"><span class="num">01</span><b><code>man ls</code></b><div>查看本机系统命令手册；按 <kbd>q</kbd> 退出。</div></div><div class="definition"><span class="num">02</span><b><code>git --help</code></b><div>查看程序自己的帮助；是否支持需要看具体程序。</div></div><div class="definition"><span class="num">03</span><b><code>git --version</code></b><div>查看程序版本；有些程序使用 <code>-V</code>，也有程序不支持。</div></div><h3>高频参数模式</h3><div class="option-grid"><div class="head">形式</div><div class="head">常见含义</div><div class="head">示例与差异</div><div class="flag">-h / --help</div><div>帮助，或易读单位</div><div><code>curl -h</code>；<code>ls -lh</code></div><div class="flag">--version / -V</div><div>显示版本</div><div><code>git --version</code>；<code>-V</code> 并不通用</div><div class="flag">-v</div><div>verbose，详细过程</div><div><code>cp -v</code></div><div class="flag">-q</div><div>quiet，减少输出</div><div><code>grep -q</code></div><div class="flag">-o</div><div>输出文件或排序方式</div><div><code>curl -o</code>；<code>top -o</code></div><div class="flag">-s</div><div>silent 或 summary</div><div><code>curl -s</code>；<code>du -s</code></div><div class="flag">-i</div><div>interactive，操作前询问</div><div><code>rm -i</code>；<code>cp -i</code></div><div class="flag">-f</div><div>force，强制执行</div><div><code>rm -f</code>，谨慎使用</div><div class="flag">-n</div><div>含义差异很大</div><div><code>cp -n</code> 不覆盖；<code>rsync -n</code> 试运行；<code>cat -n</code> 行号</div><div class="flag">-r / -R</div><div>经常表示递归</div><div><code>cp -R</code> 复制目录</div><div class="flag">-a</div><div>all 或 archive</div><div><code>ls -a</code>；<code>rsync -a</code></div><div class="flag">--</div><div>结束参数解析</div><div><code>rm -- -draft.txt</code>；支持情况需确认</div></div><div class="note"><code>-y</code>、<code>-z</code>、<code>-w</code>、<code>-L</code>、<code>-p</code> 也很常见，但跨命令差异更大，应在具体命令中学习。</div></section>
+      <section class="chapter" id="reference"><div class="chapter-index">完整命令库</div><h2>39 个常用命令</h2><p class="chapter-intro">原文的 21 个命令全部保留，并补充 18 个继续学习 Shell 时马上会用到的命令。每项都有课程入口、用途、参数、完整示例和实战案例。</p><div class="library-note"><div><b>21</b>原文命令</div><div><b>18</b>扩展命令</div><div><b>39</b>命令合计</div><div><b>39</b>实战案例</div></div><div class="command-toolbar"><input id="commandSearch" placeholder="筛选命令、参数、用途、示例或案例"><button class="btn" id="toggleCases">展开全部案例</button><span class="count" id="commandCount"></span></div><div class="table-wrap"><table><thead><tr><th>命令</th><th>作用与词源</th><th>常用参数组合</th><th>完整示例</th></tr></thead><tbody id="commandRows"></tbody></table><div class="empty" id="empty">没有匹配项</div></div><h3>帮助与版本</h3><div class="note"><code>--help</code>、<code>--version</code> 是常见约定，不是所有命令的统一参数。正确写法中两个短横线与单词之间没有空格。系统命令优先使用 <code>man 命令名</code>；例如 <code>git --help</code>、<code>git --version</code>、<code>zsh --version</code>。</div><h3>资料来源</h3><ul class="sources"><li><a href="https://support.apple.com/guide/terminal/welcome/mac" target="_blank" rel="noreferrer">Apple Terminal 使用手册</a></li><li><a href="https://zsh.sourceforge.io/Doc/Release/Command-Execution.html" target="_blank" rel="noreferrer">Zsh：命令执行顺序</a></li><li><a href="https://zsh.sourceforge.io/Doc/Release/Redirection.html" target="_blank" rel="noreferrer">Zsh：重定向</a></li><li><a href="https://github.com/apple-oss-distributions/text_cmds/blob/main/cut/cut.1" target="_blank" rel="noreferrer">Apple cut 手册源码</a></li><li><a href="https://nano-editor.org/dist/v7/cheatsheet.html" target="_blank" rel="noreferrer">GNU nano v7 速查表</a></li></ul></section>
+      <section class="chapter" id="quiz"><div class="chapter-index">综合自测</div><h2>17 题巩固自测</h2><p class="chapter-intro">覆盖路径、文件、文本、帮助、进程、磁盘和归档。选择后立即查看解释，答案只保存在当前浏览器。</p><div id="quizBody"></div><button class="btn" id="resetQuiz">重置答案</button></section>
+      <section class="print-only" id="printSheet"><h1>macOS Zsh 终端速查表</h1><p>macOS Sequoia 15.x · zsh · A4 打印版　　参数必须结合具体命令理解。</p><div class="print-note"><b>安全提示：</b><code>rm</code> 不经过废纸篓；执行删除、移动、覆盖前，先用 <code>pwd</code> 和 <code>ls</code> 确认位置与目标。</div><h2>核心命令</h2><table><thead><tr><th>命令</th><th>作用</th><th>示例</th></tr></thead><tbody id="printRows"></tbody></table><div class="print-grid"><section><h2>管道与重定向</h2><p><code>|</code> 传递输出：<code>ls | grep txt</code><br><code>&gt;</code> 覆盖写入：<code>echo 1 &gt; a.txt</code><br><code>&gt;&gt;</code> 末尾追加：<code>echo 2 &gt;&gt; a.txt</code><br><code>&lt;</code> 文件作为输入：<code>sort &lt; a.txt</code></p></section><section><h2>PATH</h2><p><code>echo "$PATH"</code> 查看原文。外部程序按目录从前到后查找；别名、函数和内建命令也会影响解析。用 <code>command -v nano</code> 看当前选中的命令。</p></section><section><h2>参数与帮助</h2><p><code>man ls</code> 本机手册；<code>git --help</code> 帮助；<code>git --version</code> 版本。长参数中间无空格，且不是所有命令都支持。<br><code>ls -lh</code> 易读大小；<code>cp -n</code> 不覆盖；<code>rsync -n</code> 试运行。</p></section><section><h2>nano / pico</h2><p><code>Ctrl+O</code> 写出并按 Enter 确认，<code>Ctrl+X</code> 退出，<code>Ctrl+K</code> 剪切行，<code>Ctrl+U</code> 粘贴内部剪切区。版本可能不同，以底部提示为准。</p></section></div><div class="print-footer">本速查表不替代 <code>man 命令名</code>；不同 macOS 与工具版本的参数可能不同。</div></section>
+    </div></main>
+  </div><div class="toast" id="toast" role="status"></div>
+  <script>
+  const labSetup=`export ZSH_LAB="$(mktemp -d "$HOME/zsh-learning.XXXXXX")"
+cd "$ZSH_LAB"
+mkdir -p folder source backup archive
+printf '%s\\n' '第一行' '今天学习 zsh' '第三行' > notes.txt
+cp notes.txt draft.txt
+touch temp.txt
+printf '%s\\n' 'INFO start' 'WARN retry' 'INFO ready' > app.log
+printf '%s\\n' 'Li' 'Wang' 'Li' 'Chen' > names.txt
+printf '%s\\n' 'alice:501' 'bob:502' > accounts.txt
+printf '%s\\n' '#!/bin/zsh' 'echo lesson-ready' > learn.zsh
+printf '%s\\n' 'sync sample' > source/item.txt
+printf '%s\\n' 'folder sample' > folder/item.txt
+pwd`;
+  const startLesson={id:'start',title:'开始这里',intro:'先理解终端、Shell 和命令，再建立不会碰到真实文件的练习区。',html:`<div class="definition"><span class="num">01</span><b>终端 Terminal</b><div>你输入文字、看到结果的应用窗口。</div></div><div class="definition"><span class="num">02</span><b>Shell：zsh</b><div>解释输入、展开变量并安排命令执行。macOS 默认交互 Shell 通常是 zsh。</div></div><div class="definition"><span class="num">03</span><b>命令 Command</b><div>完成具体任务，例如 <code>pwd</code> 显示当前位置。</div></div>${terminal('$ pwd\n/Users/yourname\n\n$ echo "你好，终端"\n你好，终端')}<p class="tip">示例中的 <code>$</code> 是提示符，不需要输入。</p><h3>建立安全练习区</h3><p>运行下面整段命令，会在主目录创建一个名称随机的新目录，并把路径保存在 <code>ZSH_LAB</code> 中。后面的课程都使用这些样例文件。</p>${terminal(labSetup,labSetup)}<div class="note">请在同一个终端窗口中继续学习。窗口关闭后变量会失效，可以回到本页重新创建。学习结束时运行 <code>open -R "$ZSH_LAB"</code>，在 Finder 中确认后移到废纸篓。</div>`};
+  const unitIntros=[
+    {id:'unit-files',title:'文件与路径导学',intro:'先知道自己在哪里，再创建、复制、移动和删除。',html:`<h3>路径决定命令作用的位置</h3><details open><summary>绝对路径与相对路径</summary><div><p>绝对路径以 <code>/</code> 开头；相对路径从当前目录计算。<code>.</code> 是当前目录，<code>..</code> 是上级目录，<code>~</code> 是主目录。</p>${terminal('$ cd "$ZSH_LAB"\n$ pwd\n$ ls -la')}</div></details><details><summary>路径、空格与引号</summary><div><p>路径含空格时，用双引号包住整体。<code>"$HOME/My Notes"</code> 会展开变量；<code>'$HOME/My Notes'</code> 会保留文字。</p></div></details><h3>文件操作的固定检查顺序</h3><ol class="plain-list"><li><code>cd "$ZSH_LAB"</code> 回到安全练习区。</li><li><code>pwd</code> 确认当前位置。</li><li><code>ls -la</code> 检查来源和目标。</li><li>再执行 <code>cp</code>、<code>mv</code> 或 <code>rm</code>。</li></ol><div class="warning"><b>删除不会进入废纸篓。</b> 初学阶段只在 ZSH_LAB 中练习，并优先使用 <code>rm -i 文件名</code>。</div>`},
+    {id:'unit-text',title:'文本与管道导学',intro:'理解标准输入和标准输出，才能把文本命令组合起来。',html:`<h3>四个核心符号</h3><div class="definition"><span class="num">|</span><b>管道</b><div>把前一个命令的输出交给后一个命令：<code>sort names.txt | uniq -c</code></div></div><div class="definition"><span class="num">&gt;</span><b>覆盖写入</b><div>清空目标后写入：<code>printf 'one\\n' &gt; output.txt</code></div></div><div class="definition"><span class="num">&gt;&gt;</span><b>追加写入</b><div>保留原内容并写到末尾：<code>printf 'two\\n' &gt;&gt; output.txt</code></div></div><div class="definition"><span class="num">&lt;</span><b>输入重定向</b><div>让命令从文件读取：<code>sort &lt; names.txt</code></div></div><div class="warning"><code>cat notes.txt &gt; notes.txt</code> 会在读取前清空文件。输入文件和覆盖目标不要使用同一路径。</div><h3>一条组合命令怎么读</h3>${terminal("$ grep -i 'info' app.log | wc -l\n       2")}<p>先读管道左侧：筛出包含 info 的行；再把结果交给右侧：统计行数。</p>`},
+    {id:'unit-shell',title:'Shell、权限与进程导学',intro:'学会查帮助、理解命令来源，并观察或结束自己启动的进程。',html:`<h3>参数没有统一字典</h3><p><code>ls -h</code>、<code>curl -h</code> 和 <code>rsync -n</code> 中的短参数必须结合具体命令理解。</p><h3>帮助和版本的常见写法</h3><div class="definition"><span class="num">01</span><b><code>man ls</code></b><div>阅读本机系统命令手册，按 <kbd>q</kbd> 退出。</div></div><div class="definition"><span class="num">02</span><b><code>程序 --help</code></b><div>很多第三方程序支持，例如 <code>git --help</code>；macOS 自带的 BSD 命令不一定支持。</div></div><div class="definition"><span class="num">03</span><b><code>程序 --version</code></b><div>很多程序用它显示版本，例如 <code>git --version</code>、<code>zsh --version</code>。</div></div><div class="note"><code>--help</code> 和 <code>--version</code> 都是一个完整参数，两个短横线后面不能加空格。它们是常见约定，不是所有命令的统一规则。</div><h3>常见参数模式，不是统一规则</h3><div class="option-grid"><div class="head">常见形式</div><div class="head">常见含义</div><div class="head">必须结合命令判断</div><div class="flag">-h / --help</div><div>帮助，或 human-readable</div><div><code>curl -h</code> 帮助；<code>ls -lh</code> 易读大小</div><div class="flag">--version / -V</div><div>显示版本</div><div><code>git --version</code>；是否支持 <code>-V</code> 要查手册</div><div class="flag">-v</div><div>verbose，显示过程</div><div><code>cp -v</code>；有些程序含义不同</div><div class="flag">-q</div><div>quiet，减少输出</div><div><code>grep -q</code> 只用退出状态表达是否匹配</div><div class="flag">-o</div><div>经常与输出或排序有关</div><div><code>curl -o</code> 指定文件；<code>top -o</code> 指定排序键</div><div class="flag">-s</div><div>silent 或 summary</div><div><code>curl -s</code> 静默；<code>du -s</code> 只汇总</div><div class="flag">-i</div><div>interactive，操作前询问</div><div><code>rm -i</code>、<code>cp -i</code></div><div class="flag">-f</div><div>force，强制执行</div><div><code>rm -f</code> 会减少保护，谨慎使用</div><div class="flag">-n</div><div>含义差异很大</div><div><code>cp -n</code> 不覆盖；<code>rsync -n</code> 试运行；<code>cat -n</code> 行号</div><div class="flag">-r / -R</div><div>经常表示递归</div><div><code>cp -R</code> 复制目录；具体大小写要查命令</div><div class="flag">-a</div><div>all 或 archive</div><div><code>ls -a</code> 显示隐藏项；<code>rsync -a</code> 归档模式</div><div class="flag">--</div><div>结束参数解析</div><div><code>rm -- -draft.txt</code> 把短横线开头的名称当文件；支持情况仍需确认</div></div><h3>Shell 如何解析命令名</h3><div class="path-flow"><div><b>1. 别名</b><small>alias</small></div><div><b>2. 函数</b><small>function</small></div><div><b>3. 内建命令</b><small>builtin</small></div><div><b>4. PATH</b><small>external</small></div></div><p>PATH 是用冒号分隔的外部程序目录列表。用 <code>command -v nano</code> 查看当前会执行什么，不要直接替换整段 PATH。</p><h3>进程操作顺序</h3><ol class="plain-list"><li><code>ps</code> 查看某一时刻的进程快照，<code>top</code> 观察持续变化。</li><li>交互命令通常用 <kbd>Ctrl+C</kbd> 停止。</li><li><code>kill</code> 只对确认属于自己的 PID 操作，先使用默认 TERM。</li></ol>`},
+    {id:'unit-storage',title:'磁盘、网络与归档导学',intro:'先判断问题属于空间、下载、打包还是同步，再选择命令。',html:`<div class="definition"><span class="num">01</span><b>空间</b><div><code>du</code> 看文件或目录占用，<code>df</code> 看文件系统剩余容量。</div></div><div class="definition"><span class="num">02</span><b>下载</b><div><code>curl</code> 处理 URL；保存文件前确认目标目录和文件名。</div></div><div class="definition"><span class="num">03</span><b>归档</b><div><code>tar</code> 把文件组合成归档；解开陌生归档前先用 <code>tar -tf</code> 查看。</div></div><div class="definition"><span class="num">04</span><b>同步</b><div><code>rsync</code> 比较来源与目标；初次执行先加 <code>-n</code> 预演。</div></div><div class="note">这组命令可能涉及较大的数据或网络。练习仍然以 ZSH_LAB 为范围，并保留试运行步骤。</div>`}
+  ];
+  const commandLibrary=[
+    ['cd','切换目录；change directory；zsh 内建','cd：回主目录｜cd ..：上级｜cd -：前一目录','cd "$HOME/Documents/My Notes"','原文'],
+    ['ls','列出目录内容；list','-a：含隐藏项｜-l：详细列表｜-h：易读大小','ls -lah "$HOME/Documents"','原文'],
+    ['pwd','显示当前工作目录；print working directory；zsh 内建','-P：显示解析符号链接后的物理路径','pwd；pwd -P','原文'],
+    ['mkdir','创建目录；make directory','-p：连同缺失的上级目录一起创建','mkdir -p practice/notes','原文'],
+    ['cp','复制文件或目录；copy','-i：覆盖前询问｜-n：不覆盖｜-R：递归目录｜-v：显示过程','cp -i notes.txt notes-copy.txt；cp -Ri folder backup-folder-copy','原文'],
+    ['mv','移动或重命名；move','-i：覆盖前询问｜-n：不覆盖｜-v：显示过程','mv -i old.txt new.txt；mv -i notes.txt archive/','原文'],
+    ['rm','删除目录项；remove；不经过废纸篓','-i：逐项确认｜-f：强制｜-R：递归目录；后两项需谨慎','rm -i notes-copy.txt','原文'],
+    ['cat','拼接文件并输出；concatenate','-n：显示行号｜-s：合并连续空行','cat -n notes.txt','原文'],
+    ['echo','输出文字或变量；通常为 zsh 内建','-n：不输出末尾换行；复杂格式优先用 printf','echo "当前目录：$PWD"','原文'],
+    ['less','分页查看长文本','Space：下一页｜b：上一页｜/：搜索｜q：退出','less notes.txt','原文'],
+    ['man','阅读命令手册；manual','man 名称：打开手册｜man -k 关键词：搜索手册描述','man ls；man zshbuiltins','原文'],
+    ['which','查看 zsh 如何解析命令；通常为内建','-a：列出所有匹配；也可能报告别名、函数或内建','which -a ls','原文'],
+    ['chmod','修改权限位；change mode','u+x：所有者增加执行权｜644、755：八进制权限','chmod u+x learn.zsh','原文'],
+    ['uname','显示系统与内核信息；Unix name','-a：全部｜-m：硬件架构｜-r：内核版本','uname -a；sw_vers','原文'],
+    ['history','查看当前 Shell 历史；zsh 内建','history -20：查看最近 20 条；正数表示历史事件编号起点','history -20','原文'],
+    ['open','用默认应用打开；macOS 专属','-a：指定应用｜-R：在 Finder 中显示文件','open .；open -R notes.txt','原文'],
+    ['find','递归查找文件','-type f：文件｜-type d：目录｜-name：名称模式｜-mtime：修改时间','find . -type f -name \'*.txt\'','原文'],
+    ['grep','查找匹配文本行；global regular expression print','-n：行号｜-i：忽略大小写｜-v：反选｜-q：静默｜-E：扩展正则','grep -ni \'zsh\' notes.txt','原文'],
+    ['top','动态查看进程','-o cpu：按 CPU 排序｜-l 1：采样一次｜q：退出','top -o cpu','原文'],
+    ['nano','终端编辑器命令名；可能对应 nano 或 pico','Ctrl+O：写出｜Ctrl+X：退出｜Ctrl+K/U：剪切/粘贴内部缓冲','nano notes.txt','原文'],
+    ['wc','统计行、词、字节或字符；word count','-l：换行数｜-w：词｜-c：字节｜-m：字符','wc -l notes.txt；wc -m notes.txt','原文'],
+    ['touch','创建空文件或更新时间戳','无参数：不存在则创建，存在则更新时间','touch notes.txt','扩展'],
+    ['printf','按格式稳定输出文本','%s：字符串｜%d：整数｜\\n：换行；比 echo 更可控','printf \'%s\\n\' "第一行" "第二行" > generated.txt','扩展'],
+    ['head','查看文件开头','-n 数量：指定行数','head -n 10 notes.txt','扩展'],
+    ['tail','查看文件结尾','-n 数量：指定行数｜-f：持续跟踪追加内容','tail -n 20 app.log；tail -f app.log','扩展'],
+    ['sort','对文本行排序','-n：数值排序｜-r：倒序｜-u：排序并去重','sort -u names.txt','扩展'],
+    ['uniq','处理相邻重复行','-c：计数｜-d：只看重复；通常先配合 sort','sort names.txt | uniq -c','扩展'],
+    ['cut','从每行提取字段或字符','-d：分隔符｜-f：字段｜-c：字符位置｜macOS -w：空白分隔','cut -d : -f 1 accounts.txt','扩展'],
+    ['tr','逐字符转换或删除；translate','-d：删除字符｜-s：压缩重复字符','printf \'a  b\\n\' | tr -s \' \'','扩展'],
+    ['sed','按规则编辑文本流；stream editor','-n：抑制默认输出｜-E：扩展正则；macOS 原地编辑语法与 GNU 不同','sed -n \'1,5p\' notes.txt','扩展'],
+    ['du','查看文件或目录占用空间；disk usage','-s：只汇总｜-h：易读大小','du -sh "$HOME/Documents"','扩展'],
+    ['df','查看文件系统剩余空间；disk free','-h：易读大小','df -h','扩展'],
+    ['ps','查看进程快照；process status','aux：BSD 风格全部进程｜-p PID：指定进程｜-o：选择输出列','ps -p $$ -o pid,ppid,command','扩展'],
+    ['kill','向进程发送信号','PID：默认 TERM｜-9：强制 KILL，应最后使用','sleep 300 & job_pid=$!; kill "$job_pid"','扩展'],
+    ['curl','传输 URL 数据；client URL','-I：只看响应头｜-L：跟随跳转｜-o：输出文件｜-v：详细信息','curl -L -o page.html https://example.com','扩展'],
+    ['tar','创建或解开归档','-c：创建｜-x：解开｜-t：列表｜-f：文件｜-z：gzip','tar -czf backup.tar.gz folder','扩展'],
+    ['rsync','增量同步文件','-a：归档｜-v：详细｜-n：试运行｜--delete：删除目标多余项，需谨慎','rsync -avn source/ backup/','扩展'],
+    ['command','按 Shell 规则查找或执行命令；zsh 内建','-v：显示将执行什么｜-V：更详细说明；含义属于 command','command -v nano','扩展'],
+    ['whence','查看 zsh 中命令的来源；zsh 内建','-v：说明类型｜-a：列出全部匹配','whence -va ls','扩展']
+  ];
+  const commandCases={
+    cd:['进入练习区中的子目录','练习区已经包含 folder 目录，请进入该目录。','cd "$ZSH_LAB/folder"','提示符所在目录改变；运行 pwd 可看到以 folder 结尾的路径。'],
+    ls:['检查练习区中的全部文件','查看练习区，包括隐藏项、权限和易读的文件大小。','ls -lah "$ZSH_LAB"','得到详细列表，以点开头的隐藏项也会显示。'],
+    pwd:['在操作文件前确认位置','先运行 cd "$ZSH_LAB" 回到练习区，再确认当前目录。','pwd','终端输出练习区的绝对路径。'],
+    mkdir:['一次建立多层练习目录','在练习区内创建 projects/notes 两层目录。','mkdir -p projects/notes','两层目录被创建；再次运行也不会报错。'],
+    cp:['给笔记建立安全副本','复制 notes.txt，保留原文件，并在覆盖同名副本前询问。','cp -i notes.txt notes-copy.txt','当前目录出现 notes-copy.txt；若已存在会先询问。'],
+    mv:['给草稿改名','把 draft.txt 改成 draft-renamed.txt，并在覆盖前确认。','mv -i draft.txt draft-renamed.txt','draft.txt 消失，内容出现在 draft-renamed.txt 中。'],
+    rm:['确认后删除临时文件','删除 temp.txt，但希望执行前由终端询问一次。','rm -i temp.txt','确认 y 后文件被永久删除；回答 n 则保留。'],
+    cat:['带行号检查短文本','快速查看 notes.txt，并为每一行显示编号。','cat -n notes.txt','文件内容直接输出到终端，每行前带行号。'],
+    echo:['确认当前工作目录变量','把当前目录路径显示在一行清楚的提示文字中。','echo "当前目录：$PWD"','终端输出“当前目录：”及当前路径。'],
+    less:['阅读不适合一次显示的日志','分页查看 app.log，并能用 / 搜索、q 退出。','less app.log','进入分页界面；文件本身不会被修改。'],
+    man:['查清 ls 参数的准确含义','在本机手册中确认 ls 支持哪些参数。','man ls','打开 ls 手册页；按 q 返回终端。'],
+    which:['检查同名命令来自哪里','电脑里可能有多个 nano，列出 zsh 能找到的全部匹配。','which -a nano','输出匹配到的命令定义或路径，顺序反映解析优先级。'],
+    chmod:['让脚本可以直接运行','给 learn.zsh 的所有者增加执行权限。','chmod u+x learn.zsh','文件获得所有者执行位，可尝试用 ./learn.zsh 运行。'],
+    uname:['确认 Mac 的硬件架构','判断当前 Mac 是 arm64 还是 x86_64。','uname -m','Apple 芯片通常输出 arm64，Intel Mac 通常输出 x86_64。'],
+    history:['回找刚才输入的命令','查看当前 Shell 最近 20 条历史记录。','history -20','终端列出最近 20 条左右的命令及历史编号。'],
+    open:['在 Finder 中定位文件','让 Finder 打开 notes.txt 所在目录并选中它。','open -R notes.txt','Finder 窗口打开，notes.txt 被高亮选中。'],
+    find:['寻找散落的文本文件','从当前目录向下查找所有扩展名为 .txt 的普通文件。','find . -type f -name "*.txt"','逐行输出所有匹配文件的相对路径。'],
+    grep:['在日志中忽略大小写搜索','查找 app.log 中所有包含 info 的行，并显示行号。','grep -ni "info" app.log','输出第 1、3 行，前面带原文件中的行号。'],
+    top:['找出正在占用 CPU 的进程','动态查看进程，并按 CPU 使用率排序。','top -o cpu','实时列表按 CPU 排列；按 q 退出。'],
+    nano:['在终端创建一份笔记','打开 notes.txt 进行编辑，保存后退出。','nano notes.txt','编辑器打开；按屏幕提示写出文件后，内容保存在 notes.txt。'],
+    wc:['统计笔记有多少行','计算 notes.txt 的换行数量。','wc -l notes.txt','输出行数和文件名；结尾没有换行时结果可能比视觉行数少 1。'],
+    touch:['先建立一个空白占位文件','为稍后填写的 todo.txt 建立空文件。','touch todo.txt','文件不存在时被创建；已存在时只更新时间戳。'],
+    printf:['稳定生成两行文本','把“第一行”和“第二行”准确写进 generated.txt，每项各占一行。','printf "%s\\n" "第一行" "第二行" > generated.txt','generated.txt 被创建或覆盖，并包含两行指定文字。'],
+    head:['快速看日志开头','只查看 app.log 的前 10 行。','head -n 10 app.log','终端输出文件开头 10 行，不修改文件。'],
+    tail:['持续观察新日志','监看 app.log，后续追加的内容也要立即显示。','tail -f app.log','先显示文件末尾，新增行会持续出现；按 Ctrl+C 停止。'],
+    sort:['整理并去重名单','把 names.txt 按文本顺序排序，同时去掉重复行。','sort -u names.txt','排序后的唯一行输出到终端，原文件保持不变。'],
+    uniq:['统计每个名字出现次数','统计 names.txt 中每个不同名字的出现次数。','sort names.txt | uniq -c','相同名字先排到一起，再输出次数和名字。'],
+    cut:['提取冒号分隔的账户名','从练习区 accounts.txt 的冒号分隔内容中取出第一列。','cut -d : -f 1 accounts.txt','输出 alice 和 bob，每行只保留第一个字段。'],
+    tr:['压缩多余空格','把输入中连续出现的空格压缩成一个。','printf "a  b\\n" | tr -s " "','输出 a b，中间只剩一个空格。'],
+    sed:['预览文件指定范围','只显示 notes.txt 的第 1 到第 5 行。','sed -n "1,5p" notes.txt','终端输出前 5 行，notes.txt 不会被修改。'],
+    du:['查看练习区占用多少空间','汇总练习区的磁盘占用，并使用易读单位。','du -sh "$ZSH_LAB"','输出一个汇总大小及练习区路径。'],
+    df:['检查磁盘还剩多少空间','查看各文件系统的容量、已用空间和可用空间。','df -h','输出易读单位的文件系统空间表。'],
+    ps:['查看当前 Shell 进程','使用当前 Shell 的 PID，只显示 PID、父 PID 和命令列。','ps -p $$ -o pid,ppid,command','输出当前 Shell 对应的一行进程信息。'],
+    kill:['安全练习结束测试进程','先启动一个 sleep 测试进程，保存它的 PID，再发送默认 TERM 信号。','sleep 300 & job_pid=$!; kill "$job_pid"','只结束刚刚启动的 sleep，不需要猜测或复制陌生 PID。'],
+    curl:['下载网页到本地文件','跟随可能的跳转，把示例网页保存为 page.html。','curl -L -o page.html https://example.com','下载进度显示在终端，网页内容写入 page.html。'],
+    tar:['打包并压缩项目目录','把练习区的 folder 目录制作成 gzip 压缩归档。','tar -czf folder-backup.tar.gz folder','当前目录生成 folder-backup.tar.gz，原目录仍保留。'],
+    rsync:['同步前先预演','预览 source 目录同步到 backup 会发生什么，不实际写入。','rsync -avn source/ backup/','列出计划同步的项目，但 backup 目录内容不改变。'],
+    command:['确认实际会执行哪个程序','检查输入 nano 时 zsh 将选择哪个命令或路径。','command -v nano','输出 nano 的解析结果，常见结果是可执行文件路径。'],
+    whence:['排查 ls 是否被别名覆盖','查看 zsh 中所有名为 ls 的定义及其类型。','whence -va ls','列出别名、内建或外部路径等全部匹配。']
+  };
+  const teachingNotes={
+    cd:'cd 会改变当前 Shell 的工作目录，因此会影响后续使用相对路径的命令。路径含空格时，用引号包住整个路径。',
+    pwd:'pwd 只报告当前位置，不修改文件。执行复制、移动或删除前，先用它确认自己在哪里。',
+    ls:'ls 默认查看指定目录或当前目录。-a 会包含隐藏项；-h 只有和 -l 的大小列一起使用时才有直观效果。',
+    mkdir:'mkdir 只创建目录；-p 会补齐缺失的上级目录，并允许目标目录已经存在，适合可重复的准备步骤。',
+    touch:'touch 常用于创建空文件，但文件已存在时会更新时间戳。它不会清空原有内容。',
+    cp:'cp 的基本结构是“来源在前，目标在后”。目标是否已经存在会改变复制结果，覆盖前确认时使用 -i。',
+    mv:'mv 同时承担移动和重命名。目标名称已存在时可能被替换，初学阶段优先使用 -i。',
+    rm:'rm 删除的内容不会进入废纸篓。不要把 -f 和 -R 当作默认组合，执行前先确认目录和精确目标。',
+    open:'open 把路径交给 macOS 图形界面处理。open . 打开当前目录，-R 用 Finder 定位并选中文件。',
+    find:'find 的第一个参数是搜索起点。名称模式应加引号，避免先被 zsh 展开成当前目录中的文件名。',
+    echo:'echo 适合简单显示。双引号允许 $PWD 等变量展开；单引号会保留其中的文字。复杂格式使用 printf。',
+    printf:'printf 的第一个参数是格式字符串，后续值依次填入。它不会自动增加换行，需要明确写出 \\n。',
+    cat:'cat 会按顺序输出文件内容，适合短文件。长文件使用 less，避免大量内容快速滚过屏幕。',
+    less:'less 是只读分页器，不修改文件。使用 / 搜索，n 跳到下一个匹配，q 返回终端。',
+    head:'head 读取文件开头，适合快速确认格式。-n 后面的数字表示需要显示的行数。',
+    tail:'tail 查看文件末尾；-f 会持续等待新增内容。它不会自行结束，需要按 Ctrl+C 停止。',
+    nano:'nano 是交互式编辑器，命令启动后键盘输入交给编辑器处理。保存和退出按屏幕底部提示操作。',
+    grep:'grep 按行输出匹配内容。找到匹配时退出状态通常为 0，未找到为 1；静默判断可使用 -q。',
+    sed:'sed 默认把处理后的每一行输出到标准输出，不会自动改写源文件。-n 配合 p 可只显示选中范围。',
+    wc:'wc -l 统计换行符，不是抽象的“视觉行”。文件最后缺少换行时，结果可能比看到的行数少 1。',
+    sort:'sort 默认按当前语言环境的文本规则排序，并把结果写到标准输出。除非重定向，否则源文件不变。',
+    uniq:'uniq 只合并相邻的重复行，所以处理未排序数据时通常先运行 sort，再通过管道交给 uniq。',
+    cut:'cut 从每一行提取位置或字段。使用 -d 指定分隔符后，还必须用 -f 指定需要的字段编号。',
+    tr:'tr 按字符集合转换、删除或压缩字符，不理解单词和字段。-s 会压缩连续重复的指定字符。',
+    man:'man 显示本机实际安装版本的手册，通常比记忆参数可靠。很多程序也支持 --help 和 --version，但这是常见约定，并非所有命令都支持。',
+    which:'在 zsh 中 which 能报告别名、函数、内建或外部路径，不应简单理解为只查找 bin 目录。',
+    command:'command -v 按 Shell 规则说明一个名称将解析为什么，适合脚本和排查同名命令。',
+    whence:'whence 是 zsh 的命令解析工具；-a 列出全部匹配，-v 说明每个匹配属于什么类型。',
+    chmod:'chmod 修改权限位，不会验证脚本内容是否正确。u+x 表示只给所有者增加执行权限。',
+    uname:'uname 报告内核和硬件信息，不等同于 macOS 产品版本；查看产品版本应使用 sw_vers。',
+    history:'history 显示当前 Shell 可见的历史记录。负数表示相对当前事件的偏移；不要在命令行输入密码等敏感内容。',
+    top:'top 是持续刷新的进程视图，适合观察变化；按 q 退出。需要固定快照时使用 ps。',
+    ps:'ps 返回调用时刻的进程快照。$$ 是当前 Shell 的 PID，可用于无风险地观察自己的 Shell。',
+    kill:'kill 发送信号，并不等于强制终止。默认 TERM 允许程序清理后退出；KILL 应作为最后手段。',
+    du:'du 统计文件实际占用的磁盘空间，-s 汇总指定目标，-h 使用更易读的单位。',
+    df:'df 从文件系统角度报告容量和剩余空间，因此它回答的是“磁盘还剩多少”，不是单个目录多大。',
+    curl:'curl 把 URL 内容写到标准输出或文件。-L 跟随跳转，-o 指定文件；网络失败时先阅读错误信息。',
+    tar:'tar 把多个文件归入一个归档；-z 再使用 gzip 压缩。解开陌生归档前，先用 tar -tf 查看文件列表。',
+    rsync:'rsync 根据来源和目标的差异进行同步。来源路径末尾的斜杠会影响目录层级；先用 -n 预演。'
+  };
+  const acceptedAnswers={
+    ls:['ls -alh "$ZSH_LAB"','ls -lha "$ZSH_LAB"'],
+    grep:['grep -in "info" app.log'],
+    find:["find . -type f -name '*.txt'"],
+    cut:["cut -d ':' -f 1 accounts.txt","cut -d: -f1 accounts.txt"],
+    tr:["printf 'a  b\\n' | tr -s ' '"],
+    sed:["sed -n '1,5p' notes.txt"],
+    printf:["printf '%s\\n' '第一行' '第二行' > generated.txt"]
+  };
+  const courseCautions={
+    cp:'确认目标路径。目标目录已存在时，复制结果可能多一层目录；覆盖保护使用 -i。',
+    mv:'重命名和移动都可能替换同名目标，练习中保留 -i。',
+    rm:'rm 不经过废纸篓。练习时只删除 ZSH_LAB 中明确创建的 temp.txt。',
+    kill:'不要复制陌生 PID。本课先启动自己的 sleep 进程，再使用保存下来的 PID。',
+    rsync:'本课只运行带 -n 的预演。确认输出后，才考虑去掉 -n 进行实际同步。'
+  };
+  const courseExtras={
+    man:`<details open><summary>先按这个顺序查</summary><div><ol class="plain-list"><li>系统命令：<code>man ls</code></li><li>程序自己的帮助：<code>git --help</code></li><li>程序版本：<code>git --version</code> 或 <code>zsh --version</code></li></ol><p><code>--help</code> 和 <code>--version</code> 中间不能插入空格；如果程序不支持，就回到手册或尝试它自己的短参数帮助。</p></div></details>`,
+    nano:`<details open><summary>常用编辑快捷键</summary><div><p><kbd>Ctrl+O</kbd> 写出文件并按 Enter 确认，<kbd>Ctrl+X</kbd> 退出，<kbd>Ctrl+K</kbd> 剪切当前行，<kbd>Ctrl+U</kbd> 粘贴编辑器内部缓冲区。搜索快捷键可能随 nano/pico 版本变化，以屏幕底部提示为准。</p></div></details>`,
+    chmod:`<details><summary>符号权限和数字权限</summary><div><p><code>u+x</code> 表示给所有者增加执行权。<code>755</code>、<code>644</code> 是三组八进制权限，初学时先掌握符号写法，避免无目的地使用 <code>777</code>。</p></div></details>`,
+    tar:`<details><summary>创建、查看与解开</summary><div><p><code>tar -czf archive.tar.gz folder</code> 创建；<code>tar -tf archive.tar.gz</code> 查看列表；<code>tar -xzf archive.tar.gz</code> 解开。</p></div></details>`
+  };
+  const courseGroups=[
+    {title:'目录与文件',items:['cd','pwd','ls','mkdir','touch','cp','mv','rm','open','find']},
+    {title:'文本查看与处理',items:['echo','printf','cat','less','head','tail','grep','sed','wc','sort','uniq','cut','tr','nano']},
+    {title:'帮助、权限与进程',items:['man','which','command','whence','chmod','uname','history','top','ps','kill']},
+    {title:'磁盘、网络与归档',items:['du','df','curl','tar','rsync']}
+  ];
+  const courseOrder=courseGroups.flatMap(group=>group.items);
+  const courseRows=courseOrder.map(name=>commandLibrary.find(row=>row[0]===name));
+  const quiz=[
+    {q:'PATH 中保存的是什么？',a:['程序文件本身','外部程序所在目录的列表','所有命令的参数'],ok:1,why:'PATH 是由冒号分隔的目录列表。'},
+    {q:'关于 --help 和 --version，哪条说法准确？',a:['所有命令都必须支持','它们是常见约定，具体要看程序','两个短横线后必须加空格'],ok:1,why:'正确写法是 --help、--version，它们各自是一个完整参数，但并非所有程序都支持。'},
+    {q:'哪个命令会在覆盖前询问？',a:['cp -i notes.txt copy.txt','cp -n notes.txt copy.txt','cp -R folder'],ok:0,why:'cp -i 是交互确认；cp -n 是已有目标时不覆盖。'},
+    {q:'执行文件操作前，哪组命令最适合确认位置和目标？',a:['pwd 和 ls','echo 和 wc','uname 和 df'],ok:0,why:'pwd 确认当前目录，ls 检查目标是否存在。'},
+    {q:'哪一个符号会先清空目标文件再写入？',a:['|','>','>>'],ok:1,why:'> 是覆盖重定向；>> 才是追加。'},
+    {q:'为什么 find 的名称模式通常要加引号？',a:['让输出带颜色','避免 zsh 提前展开通配符','让 find 运行更快'],ok:1,why:'引号把 *.txt 原样交给 find，由 find 在遍历过程中匹配。'},
+    {q:'uniq 为什么常与 sort 连用？',a:['uniq 只处理相邻重复行','uniq 只能读取排序文件','sort 会自动保存文件'],ok:0,why:'sort 先让相同内容相邻，uniq 才能正确合并或计数。'},
+    {q:'tail -f 正在持续等待新日志时，如何返回终端？',a:['Command+Q','Ctrl+C','Ctrl+O'],ok:1,why:'Ctrl+C 向前台命令发送中断，停止持续跟踪。'},
+    {q:'查看最近约 20 条 zsh 历史记录应使用？',a:['history 20','history -20','history --20'],ok:1,why:'负数表示相对当前历史事件的偏移；正数是事件编号起点。'},
+    {q:'macOS cut -w 的含义是？',a:['指定输出宽度','按空格和 Tab 分隔字段','等待输入'],ok:1,why:'它应与 -f 配合使用，而且是 macOS/BSD 扩展。'},
+    {q:'Ctrl+U 在传统 nano/pico 中做什么？',a:['粘贴编辑器内部剪切缓冲区','从系统剪贴板粘贴','撤销'],ok:0,why:'系统剪贴板通常使用 Command+V；具体按键以底部提示为准。'},
+    {q:'command -v nano 主要回答什么？',a:['nano 文件有多少行','输入 nano 时 Shell 会执行什么','nano 支持哪些快捷键'],ok:1,why:'command -v 按 Shell 解析规则报告命令来源。'},
+    {q:'kill 在不指定信号时通常发送什么？',a:['TERM','KILL','STOP'],ok:0,why:'默认 TERM 允许程序正常清理；KILL 应作为最后手段。'},
+    {q:'查看目录占用和文件系统剩余空间分别使用？',a:['du 和 df','df 和 du','wc 和 ls'],ok:0,why:'du 查看文件或目录占用，df 查看文件系统容量。'},
+    {q:'rsync -n 的作用是什么？',a:['创建新目录','试运行并预览变化','强制覆盖目标'],ok:1,why:'-n 不写入，只显示计划进行的同步。'},
+    {q:'解开陌生 tar 归档前，适合先做什么？',a:['tar -tf 查看内容列表','rm 删除原文件','chmod 777'],ok:0,why:'先查看归档路径和内容，再决定是否解开。'},
+    {q:'哪条说法准确？',a:['-n 总是试运行','所有系统命令都不支持长参数','参数含义要结合具体命令'],ok:2,why:'同一个短参数字母在不同命令中含义可能完全不同。'}
+  ];
+  function terminal(text,copyText=''){const copyButton=copyText?`<button class="copy" data-copy="${escapeAttr(copyText)}" title="复制可执行命令" aria-label="复制可执行命令">⧉</button>`:'';return `<div class="terminal"><div class="terminal-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>${copyText?'可复制命令':'只读示例'}</span>${copyButton}</div><pre>${escapeHtml(text)}</pre></div>`}
+  function escapeHtml(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+  function escapeAttr(s){return escapeHtml(s).replace(/"/g,'&quot;')}
+  function commandCourse(row,index){
+    const [name,description,options,examples,origin]=row,c=commandCases[name];
+    const groupIndex=courseGroups.findIndex(group=>group.items.includes(name)),itemIndex=courseGroups[groupIndex].items.indexOf(name);
+    const nextName=courseGroups[groupIndex].items[itemIndex+1],nextUnit=unitIntros[groupIndex+1];
+    const nextId=nextName?'cmd-'+nextName:nextUnit?nextUnit.id:'reference',nextLabel=nextName?'下一课：'+nextName:nextUnit?'下一主题：'+nextUnit.title:'查看完整命令库';
+    const optionRows=options.split('｜').map(item=>`<div>${escapeHtml(item)}</div>`).join('');
+    const caution=courseCautions[name]?`<div class="warning"><b>安全提醒：</b>${escapeHtml(courseCautions[name])}</div>`:'';
+    const answers=[c[2],...(acceptedAnswers[name]||[])];
+    return `<section class="chapter command-course" id="cmd-${name}"><div class="chapter-index">命令课程 ${String(index+1).padStart(2,'0')} / 39</div><h2><code>${name}</code> · ${escapeHtml(description.split('；')[0])}</h2><p class="chapter-intro">${escapeHtml(c[0])}</p><div class="note">练习前先运行 <code>cd "$ZSH_LAB"</code> 回到安全练习区。变量失效时，请返回“开始这里”重新创建练习区。</div><div class="course-overview"><div><small>课程来源</small><b>${escapeHtml(origin==='原文'?'原始清单命令':'进阶补充命令')}</b></div><div><small>名称或词源</small><b>${escapeHtml(description.split('；').slice(1).join('；')||'以实际功能理解')}</b></div></div><h3>先理解它</h3><p>${escapeHtml(teachingNotes[name])}</p>${courseExtras[name]||''}<h3>常用写法</h3><div class="param-list">${optionRows}</div><p><b>更多示例：</b><code>${escapeHtml(examples)}</code></p>${caution}<h3>案例练习</h3><div class="case-task"><h3>${escapeHtml(c[0])}</h3><p><b>任务：</b>${escapeHtml(c[1])}</p></div><div class="practice"><label for="practice-${name}">先不看答案，输入你认为正确的命令</label><input id="practice-${name}" autocomplete="off" spellcheck="false" placeholder="输入完整命令"><button class="btn" data-answers="${escapeAttr(JSON.stringify(answers))}" data-course="${name}" data-input="practice-${name}">检查答案</button><div class="result" id="practice-${name}-result"></div></div><details class="answer-details"><summary>查看参考命令与预期结果</summary><div>${terminal('$ '+c[2]+'\n# 预期：'+c[3],c[2])}</div></details><div class="lesson-footer"><span class="completion-status" data-course-status="${name}">答对练习后自动完成</span><button class="btn primary next-btn" data-next="${nextId}">${nextLabel}　→</button></div></section>`;
+  }
+  const nav=document.querySelector('#nav'),chapters=document.querySelector('#chapters'),mobile=document.querySelector('#mobileChapter');
+  nav.insertAdjacentHTML('beforeend','<div class="nav-group">开始</div><button data-view="start"><span>00</span>开始这里</button>');
+  mobile.insertAdjacentHTML('beforeend','<option value="start">开始这里</option>');
+  chapters.insertAdjacentHTML('beforeend',`<section class="chapter" id="start"><div class="chapter-index">开始</div><h2>${startLesson.title}</h2><p class="chapter-intro">${startLesson.intro}</p>${startLesson.html}<div class="lesson-footer"><span></span><button class="btn primary next-btn" data-next="${unitIntros[0].id}">进入主题：${unitIntros[0].title}　→</button></div></section>`);
+  courseGroups.forEach((group,groupIndex)=>{const intro=unitIntros[groupIndex];nav.insertAdjacentHTML('beforeend',`<div class="nav-group">${String(groupIndex+1).padStart(2,'0')} · ${group.title}</div><button data-view="${intro.id}"><span>导</span>主题导学</button>`);mobile.insertAdjacentHTML('beforeend',`<option value="${intro.id}">主题 ${groupIndex+1} · ${intro.title}</option>`);chapters.insertAdjacentHTML('beforeend',`<section class="chapter" id="${intro.id}"><div class="chapter-index">主题 ${String(groupIndex+1).padStart(2,'0')} / 04</div><h2>${intro.title}</h2><p class="chapter-intro">${intro.intro}</p>${intro.html}<div class="lesson-footer"><span></span><button class="btn primary next-btn" data-next="cmd-${group.items[0]}">开始本主题：${group.items[0]}　→</button></div></section>`);group.items.forEach(name=>{const i=courseOrder.indexOf(name);nav.insertAdjacentHTML('beforeend',`<button class="command-link" data-view="cmd-${name}" data-command="${name}"><span>${String(i+1).padStart(2,'0')}</span>${name}</button>`);mobile.insertAdjacentHTML('beforeend',`<option value="cmd-${name}">命令 ${String(i+1).padStart(2,'0')} · ${name}</option>`)})});
+  courseRows.forEach((row,i)=>chapters.insertAdjacentHTML('beforeend',commandCourse(row,i)));
+  mobile.insertAdjacentHTML('beforeend','<option value="options">常用参数与帮助</option><option value="reference">完整命令库（39）</option><option value="quiz">巩固自测</option>');
+  const commandRows=document.querySelector('#commandRows'),printRows=document.querySelector('#printRows');
+  let casesOpen=false;
+  function renderCommands(q=''){const key=q.trim().toLowerCase();const filtered=commandLibrary.filter(row=>(row.join(' ')+' '+commandCases[row[0]].join(' ')+' '+teachingNotes[row[0]]).toLowerCase().includes(key));commandRows.innerHTML=filtered.map(r=>{const c=commandCases[r[0]];return `<tr><td>${escapeHtml(r[0])}<span class="origin">${escapeHtml(r[4])}</span><button class="course-link" data-view="cmd-${r[0]}">进入课程 →</button></td><td>${escapeHtml(r[1])}</td><td><div class="combo">${escapeHtml(r[2])}</div></td><td><code>${escapeHtml(r[3])}</code></td></tr><tr class="case-row"><td colspan="4"><details class="case-practice"${casesOpen?' open':''}><summary>案例练习：${escapeHtml(c[0])}</summary><div class="case-grid"><p><b>任务：</b>${escapeHtml(c[1])}</p><p><b>先想一想：</b>你会输入哪条命令？</p><div class="case-answer"><b>参考命令</b><code>${escapeHtml(c[2])}</code><b>预期结果：</b>${escapeHtml(c[3])}</div></div></details></td></tr>`}).join('');document.querySelector('#commandCount').textContent=`${filtered.length} / ${commandLibrary.length}`;document.querySelector('#empty').style.display=filtered.length?'none':'block'}
+  printRows.innerHTML=commandLibrary.map(r=>`<tr><td><code>${escapeHtml(r[0])}</code></td><td>${escapeHtml(r[1].split('；')[0])}</td><td><code>${escapeHtml(r[3].split('；')[0])}</code></td></tr>`).join('');renderCommands();
+  const quizBody=document.querySelector('#quizBody');quizBody.innerHTML=quiz.map((x,i)=>`<div class="quiz-q"><fieldset><legend>${i+1}. ${x.q}</legend>${x.a.map((a,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${a}</label>`).join('')}<div class="feedback" id="fb${i}"></div></fieldset></div>`).join('');
+  let completed=new Set();try{completed=new Set(JSON.parse(localStorage.getItem('zsh-command-lessons-v2')||'[]'))}catch(e){}
+  function updateProgress(){document.querySelector('#progressText').textContent=`${completed.size} / ${commandLibrary.length}`;document.querySelector('#progressBar').style.width=`${completed.size/commandLibrary.length*100}%`;document.querySelectorAll('#nav [data-command]').forEach(b=>b.classList.toggle('done',completed.has(b.dataset.command)));document.querySelectorAll('[data-course-status]').forEach(s=>{const done=completed.has(s.dataset.courseStatus);s.classList.toggle('done',done);s.textContent=done?'✓ 练习已通过':'答对练习后自动完成'})}
+  function show(id,scroll=true){document.querySelectorAll('.chapter').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if([...mobile.options].some(o=>o.value===id))mobile.value=id;history.replaceState(null,'','#'+id);window.scrollTo({top:0,behavior:scroll?'smooth':'auto'})}
+  function normalizeCommand(s){let out='',quote='',escaped=false,pendingSpace=false;for(const ch of s.trim()){if(escaped){out+=ch;escaped=false;continue}if(ch==='\\'){out+=ch;escaped=true;continue}if(quote){out+=ch;if(ch===quote)quote='';continue}if(ch==='"'||ch==="'"){if(pendingSpace&&out)out+=' ';pendingSpace=false;quote=ch;out+=ch;continue}if(/\s/.test(ch)){pendingSpace=true;continue}if(pendingSpace&&out)out+=' ';pendingSpace=false;out+=ch}return out}
+  document.addEventListener('click',async e=>{const view=e.target.closest('[data-view]');if(view){show(view.dataset.view);return}const next=e.target.closest('[data-next]');if(next){show(next.dataset.next);return}const checker=e.target.closest('[data-check]');if(checker){const input=document.querySelector('#'+checker.dataset.input),result=document.querySelector('#'+checker.dataset.input+'-result');let answers=[];try{answers=checker.dataset.answers?JSON.parse(checker.dataset.answers):[checker.dataset.check]}catch(err){answers=[checker.dataset.check]}const ok=answers.some(answer=>normalizeCommand(input.value)===normalizeCommand(answer));result.className='result '+(ok?'correct':'incorrect');result.textContent=ok?'正确。命令和关键参数都匹配。':checker.dataset.course?'还不匹配。检查参数、路径和引号，或展开下方参考答案。':'再检查一下。参考答案：'+checker.dataset.check;if(ok&&checker.dataset.course){completed.add(checker.dataset.course);try{localStorage.setItem('zsh-command-lessons-v2',JSON.stringify([...completed]))}catch(err){}updateProgress()}return}const cp=e.target.closest('.copy');if(cp){try{await navigator.clipboard.writeText(cp.dataset.copy);toast('可执行命令已复制')}catch(err){toast('浏览器未允许复制，请手动选择')}return}});
+  mobile.addEventListener('change',e=>show(e.target.value));document.querySelector('#quickTop').onclick=()=>show('reference');document.querySelector('#printBtn').onclick=()=>window.print();document.querySelector('#commandSearch').addEventListener('input',e=>renderCommands(e.target.value));document.querySelector('#toggleCases').onclick=e=>{casesOpen=!casesOpen;document.querySelectorAll('.case-practice').forEach(item=>item.open=casesOpen);e.currentTarget.textContent=casesOpen?'收起全部案例':'展开全部案例'};
+  document.querySelector('#globalSearch').addEventListener('input',e=>{const q=e.target.value.trim(),lower=q.toLowerCase();if(!q)return;const optionTerms=new Set(['--help','--version','-h','-v','-q','-o','-s','-i','-f','-n','-r','-a','--']);if(optionTerms.has(lower)||/帮助|版本|参数/.test(q)){show('options',false);return}show('reference',false);document.querySelector('#commandSearch').value=q;renderCommands(q)});document.addEventListener('keydown',e=>{if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();document.querySelector('#globalSearch').focus()}});
+  quizBody.addEventListener('change',e=>{if(e.target.type!=='radio')return;const i=+e.target.name.slice(1),ok=+e.target.value===quiz[i].ok,fb=document.querySelector('#fb'+i);fb.className='feedback '+(ok?'correct':'incorrect');fb.textContent=(ok?'正确。':'再想一下。')+quiz[i].why;try{localStorage.setItem('zsh-quiz-v3-'+i,e.target.value)}catch(err){}});document.querySelector('#resetQuiz').onclick=()=>{quizBody.querySelectorAll('input').forEach(x=>x.checked=false);quizBody.querySelectorAll('.feedback').forEach(x=>x.textContent='');for(let i=0;i<quiz.length;i++)try{localStorage.removeItem('zsh-quiz-v3-'+i)}catch(e){}};
+  function toast(msg){const t=document.querySelector('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
+  updateProgress();for(let i=0;i<quiz.length;i++){try{const v=localStorage.getItem('zsh-quiz-v3-'+i);if(v!==null){const el=document.querySelector(`input[name="q${i}"][value="${v}"]`);if(el){el.checked=true;el.dispatchEvent(new Event('change',{bubbles:true}))}}}catch(e){}}show(location.hash.slice(1)&&document.getElementById(location.hash.slice(1))?location.hash.slice(1):'start',false);
+  </script>
+</body>
+</html>
